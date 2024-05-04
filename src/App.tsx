@@ -1,7 +1,22 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import { IonApp, setupIonicReact } from '@ionic/react';
+import React, {useRef, useState} from 'react';
+import { calculator, refresh } from "ionicons/icons";
+import {
+  IonButton,
+  IonHeader,
+  IonContent,
+  IonCard,
+  IonCardContent,
+  IonCol,
+  IonGrid,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonRow,
+  IonTitle,
+  IonToolbar
+} from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -28,26 +43,88 @@ import '@ionic/react/css/display.css';
 
 /* import '@ionic/react/css/palettes/dark.always.css'; */
 /* import '@ionic/react/css/palettes/dark.class.css'; */
-import '@ionic/react/css/palettes/dark.system.css';
+// import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const heightInputRef = useRef<HTMLIonInputElement>(null);
+  const weightInputRef = useRef<HTMLIonInputElement>(null);
+
+  const [bmiValue, setBmiValue] = useState<number>();
+  
+  //Function to calculate BMI and set value of BMI 
+  const calculateBMI = () => {
+    const weight = weightInputRef.current!.value;
+    const height = heightInputRef.current!.value;
+
+    if (!weight || !height) {
+      return;
+    }
+    const BMI = +weight / (+height * +height);
+    setBmiValue(BMI);
+  };
+
+  //Function to reset input fields
+  const reset = () => {
+    weightInputRef.current!.value = "";
+    heightInputRef.current!.value = "";
+  };
+
+  return (
+    <IonApp>
+       <IonHeader>
+        <IonToolbar color="primary">
+          <IonTitle>BMI calculator App</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <IonItem>
+                <IonLabel position="floating">Your Weight (In Kg)</IonLabel>
+                <IonInput ref={weightInputRef}></IonInput>
+              </IonItem>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <IonItem>
+                <IonLabel position="floating">Your Height (In Metres)</IonLabel>
+                <IonInput ref={heightInputRef}></IonInput>
+              </IonItem>
+            </IonCol>
+          </IonRow>
+          
+          {/* Buttons to calculate BMI and reset input fields */}
+          <IonRow>
+            <IonCol>
+              <IonButton onClick={calculateBMI}>
+                <IonIcon slot="start" icon={calculator} />
+                Calculate
+              </IonButton>
+            </IonCol>
+            <IonCol>
+              <IonButton onClick={reset}>
+                <IonIcon slot="start" icon={refresh} />
+                Reset
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+
+        {bmiValue && (
+          <IonCard>
+            <IonCardContent>{bmiValue}</IonCardContent>
+          </IonCard>
+        )}
+      </IonContent>
+    </IonApp>
+  );
+};
 
 export default App;
