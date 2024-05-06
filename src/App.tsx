@@ -61,7 +61,7 @@ const App: React.FC = () => {
     const weight = weightInputRef.current!.value;
     const height = heightInputRef.current!.value;
 
-    if (!weight || !height) {
+    if (!weight || !height || +weight<=0 || +height<=0) {
       return;
     }
     const BMI = +weight / (+height * +height);
@@ -86,7 +86,7 @@ const App: React.FC = () => {
           <IonRow>
             <IonCol>
               <IonItem>
-                <IonLabel position="floating">Your Weight (In Kg)</IonLabel>
+                <IonLabel position="stacked">Your Weight (In Kg)</IonLabel>
                 <IonInput ref={weightInputRef}></IonInput>
               </IonItem>
             </IonCol>
@@ -94,7 +94,7 @@ const App: React.FC = () => {
           <IonRow>
             <IonCol>
               <IonItem>
-                <IonLabel position="floating">Your Height (In Metres)</IonLabel>
+                <IonLabel position="stacked">Your Height (In Metres)</IonLabel>
                 <IonInput ref={heightInputRef}></IonInput>
               </IonItem>
             </IonCol>
